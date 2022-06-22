@@ -73,6 +73,7 @@ public class ClassicalJustification
         {
             
         }
+        return null;
     }
     
     private static List<Proposition> getSignature(PlFormula query)
