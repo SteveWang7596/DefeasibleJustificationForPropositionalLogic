@@ -1,6 +1,7 @@
 package org.defeasiblejustification.classicalJustification;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import org.defeasiblejustification.util.Utils;
@@ -20,6 +21,7 @@ public class ClassicalJustification
     public static List<List<PlFormula>> computeJustification(PlBeliefSet knowledgeBase, PlFormula query)
     {
         List<PlFormula> rootJustification = computeSingleJustification(knowledgeBase, query);
+        Utils.print(rootJustification);
         
         return null;
     }
@@ -35,6 +37,8 @@ public class ClassicalJustification
         }
         
         result = expandFormulas(knowledgeBase, query);
+        System.out.println("After expand formulas:");
+        Utils.print(result);
         
         if (result.isEmpty())
             return result;
@@ -61,6 +65,9 @@ public class ClassicalJustification
             {
                 sPrime = result;
                 result = Utils.union(result, findRelatedFormulas(sigma, knowledgeBase));
+                PlBeliefSet resultKownledgeBase = new PlBeliefSet(result);
+                if (reasoner.query(resultKownledgeBase, query))
+                    return result;
             }
         }
         
@@ -69,11 +76,21 @@ public class ClassicalJustification
     
     private static List<PlFormula> findRelatedFormulas(List<Proposition> signatures, PlBeliefSet knowledgeBase)
     {
+        System.out.println("For signature:");
+        Utils.printPropositions(signatures);
+        
+        List<PlFormula> result = new ArrayList<PlFormula>();
+        
         for(PlFormula formula: knowledgeBase)
         {
-            
+            if (!Collections.disjoint(getSignature(formula), signatures))
+                result.add(formula);
         }
-        return null;
+        
+        System.out.println("Resulting formula list:");
+        Utils.print(result);
+        
+        return result;
     }
     
     private static List<Proposition> getSignature(PlFormula query)

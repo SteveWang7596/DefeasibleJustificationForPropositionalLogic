@@ -12,6 +12,7 @@ import org.defeasiblejustification.model.DefeasibleImplication;
 import org.tweetyproject.logics.pl.syntax.Implication;
 import org.tweetyproject.logics.pl.syntax.PlBeliefSet;
 import org.tweetyproject.logics.pl.syntax.PlFormula;
+import org.tweetyproject.logics.pl.syntax.Proposition;
 
 /**
  *
@@ -62,5 +63,13 @@ public class Utils
             System.out.println("null");
         for(PlFormula plFormula: list)
             System.out.println(plFormula);
+    }
+    
+    public static void printPropositions(List<Proposition> list)
+    {
+        if (list == null || list.isEmpty())
+            System.out.println("null");
+        for(Proposition proposition: list)
+            System.out.println(proposition);
     }
 }
