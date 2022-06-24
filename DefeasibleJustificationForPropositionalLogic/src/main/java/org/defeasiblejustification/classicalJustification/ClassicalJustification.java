@@ -20,13 +20,17 @@ public class ClassicalJustification
 {
     public static List<List<PlFormula>> computeJustification(PlBeliefSet knowledgeBase, PlFormula query)
     {
-        List<PlFormula> rootJustification = computeSingleJustification(knowledgeBase, query);
+        SatSolver.setDefaultSolver(new Sat4jSolver());
+        SatReasoner reasoner = new SatReasoner();
+        
+        List<PlFormula> rootJustification = computeSingleJustification(knowledgeBase, query, reasoner);
+        System.out.println("Root Justification: ");
         Utils.print(rootJustification);
         
         return null;
     }
     
-    private static List<PlFormula> computeSingleJustification(PlBeliefSet knowledgeBase, PlFormula query)
+    private static List<PlFormula> computeSingleJustification(PlBeliefSet knowledgeBase, PlFormula query, SatReasoner reasoner)
     {
         List<PlFormula> result = new ArrayList<PlFormula>();
         
@@ -36,23 +40,21 @@ public class ClassicalJustification
             return result;
         }
         
-        result = expandFormulas(knowledgeBase, query);
+        result = expandFormulas(knowledgeBase, query, reasoner);
         System.out.println("After expand formulas:");
         Utils.print(result);
-        
         if (result.isEmpty())
             return result;
         
-        result = contractFormuls(result, query);
+        result = contractFormuls(result, query, reasoner);
+        System.out.println("After contract formulas:");
+        Utils.print(result);
         
         return result;
     }
 
-    private static List<PlFormula> expandFormulas(PlBeliefSet knowledgeBase, PlFormula query) 
+    private static List<PlFormula> expandFormulas(PlBeliefSet knowledgeBase, PlFormula query, SatReasoner reasoner) 
     {
-        SatSolver.setDefaultSolver(new Sat4jSolver());
-        SatReasoner reasoner = new SatReasoner();
-        
         List<PlFormula> result = new ArrayList<PlFormula>();
         
         if (!reasoner.query(knowledgeBase, query))
@@ -68,10 +70,10 @@ public class ClassicalJustification
                 PlBeliefSet resultKownledgeBase = new PlBeliefSet(result);
                 if (reasoner.query(resultKownledgeBase, query))
                     return result;
+                sigma = getSignature(result);
             }
         }
-        
-        return null;
+        return result;
     }
     
     private static List<PlFormula> findRelatedFormulas(List<Proposition> signatures, PlBeliefSet knowledgeBase)
@@ -87,9 +89,24 @@ public class ClassicalJustification
                 result.add(formula);
         }
         
-        System.out.println("Resulting formula list:");
+        System.out.println("Related formula list:");
         Utils.print(result);
         
+        return result;
+    }
+    
+    private static List<Proposition> getSignature(List<PlFormula> formulas)
+    {
+        List<Proposition> result = new ArrayList<Proposition>();
+        for (PlFormula formula: formulas)
+        {
+            List<Proposition> signature = getSignature(formula);
+            for (Proposition atom : signature)
+            {
+                if (!result.contains(atom))
+                    result.add(atom);
+            }
+        }
         return result;
     }
     
@@ -101,9 +118,47 @@ public class ClassicalJustification
         return result;
     }
 
-    private static List<PlFormula> contractFormuls(List<PlFormula> result, PlFormula query) 
+    private static List<PlFormula> contractFormuls(List<PlFormula> result, PlFormula query, SatReasoner reasoner) 
     {
-        return null;
+        return contractRecursive(new ArrayList<PlFormula>(), result, query, reasoner);
+    }
+
+    private static List<PlFormula> contractRecursive(List<PlFormula> support, List<PlFormula> whole, PlFormula query, SatReasoner reasoner) 
+    {
+        if (whole.size() == 1)
+            return whole;
+        
+        List<List<PlFormula>> splitList = split(whole);
+        List<PlFormula> left = splitList.get(0);
+        List<PlFormula> right = splitList.get(1);
+        
+        List<PlFormula> leftUnion = Utils.union(support, left);
+        PlBeliefSet leftKB = new PlBeliefSet(leftUnion);
+        List<PlFormula> rightUnion = Utils.union(support, right);
+        PlBeliefSet rightKB = new PlBeliefSet(rightUnion);
+        
+        if (reasoner.query(leftKB, query))
+            return contractRecursive(support, left, query, reasoner);
+        if (reasoner.query(rightKB, query))
+            return contractRecursive(support, right, query, reasoner);
+        
+        List<PlFormula> leftPrime = contractRecursive(rightUnion, left, query, reasoner);
+        List<PlFormula> leftPrimeUnion = Utils.union(support, leftPrime);
+        List<PlFormula> rightPrime = contractRecursive(leftPrimeUnion, right, query, reasoner);
+        
+        return Utils.union(leftPrime, rightPrime);
+    }
+    
+    private static List<List<PlFormula>> split(List<PlFormula> whole)
+    {
+        List<PlFormula> left = whole.subList(0, whole.size()/2);
+        List<PlFormula> right = whole.subList(whole.size()/2, whole.size());
+        
+        List<List<PlFormula>> result = new ArrayList<>();
+        result.add(left);
+        result.add(right);
+        
+        return result;
     }
     
 }

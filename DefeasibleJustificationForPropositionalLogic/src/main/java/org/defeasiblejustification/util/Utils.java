@@ -22,6 +22,12 @@ public class Utils
 {
     public static List<PlFormula> union(List<PlFormula> list1, List<PlFormula> list2)
     {
+        if (list1 == null || list1.isEmpty())
+            return list2;
+        
+        if (list2 == null || list2.isEmpty())
+            return list1;
+        
         Set<PlFormula> set = new HashSet<PlFormula>();
         set.addAll(list1);
         set.addAll(list2);
