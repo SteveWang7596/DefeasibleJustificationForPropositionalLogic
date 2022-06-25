@@ -40,7 +40,6 @@ public class ClassicalJustificationTester
             }
             
             PlFormula query = new Implication(new Proposition("a"), new Proposition("c"));
-            System.out.println("Query = " + query );
             
             ClassicalJustification.computeJustification(knowledgeBase, query);
             

@@ -2,8 +2,11 @@ package org.defeasiblejustification.classicalJustification;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
+import org.defeasiblejustification.model.Node;
 import org.defeasiblejustification.util.Utils;
 import org.tweetyproject.logics.pl.reasoner.SatReasoner;
 import org.tweetyproject.logics.pl.sat.Sat4jSolver;
@@ -27,6 +30,34 @@ public class ClassicalJustification
         System.out.println("Root Justification: ");
         Utils.print(rootJustification);
         
+        Node rootNode = new Node(knowledgeBase, rootJustification);
+        
+        Queue<Node> queue = new LinkedList<Node>();
+        queue.add(rootNode);
+        
+        while(!queue.isEmpty())
+        {
+            Node node = queue.poll();
+            
+            System.out.println("Working on node with justification: ");
+            Utils.print(node.getJustification());
+            
+            for( PlFormula formula : node.getJustification())
+            {
+                Node childNode = new Node(Utils.remove(node.getKnowledgeBase(), formula));
+                List<PlFormula> childJustification = computeSingleJustification(childNode.getKnowledgeBase(), query, reasoner);
+                if (childJustification != null || childJustification.isEmpty())
+                {
+                    childNode.setJustification(childJustification);
+                    queue.add(childNode);
+                }
+            }
+            
+            
+        }
+        
+        System.out.println("Tree:");
+        System.out.println(rootNode.toString());
         return null;
     }
     

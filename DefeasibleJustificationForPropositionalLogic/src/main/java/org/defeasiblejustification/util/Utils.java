@@ -63,6 +63,18 @@ public class Utils
         return knowledgeBase;
     }
     
+    public static PlBeliefSet remove(PlBeliefSet knowledgeBase, PlFormula formulas)
+    {
+        knowledgeBase.remove(formulas);
+        return knowledgeBase;
+    }
+    
+    public static List<PlFormula> remove(List<PlFormula> knowledgeBase, PlFormula formula)
+    {
+        knowledgeBase.remove(formula);
+        return knowledgeBase;
+    }
+    
     public static void print(List<PlFormula> list)
     {
         if (list == null || list.isEmpty())
@@ -77,5 +89,20 @@ public class Utils
             System.out.println("null");
         for(Proposition proposition: list)
             System.out.println(proposition);
+    }
+    
+    public static String justificationToString(List<PlFormula> formulas)
+    {
+        if (formulas == null || formulas.isEmpty())
+            return "No Justification";
+        
+        StringBuilder stringBuilder = new StringBuilder("{");
+        for (PlFormula formula : formulas)
+        {
+            stringBuilder.append(formula)
+                    .append(", ");
+        }
+        stringBuilder.append("}");
+        return stringBuilder.toString();
     }
 }
