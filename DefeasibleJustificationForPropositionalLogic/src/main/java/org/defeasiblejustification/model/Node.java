@@ -45,6 +45,11 @@ public class Node
     public void setJustification(List<PlFormula> justification)
     {
         this.justification = justification;
+        this.childrenNodes = new HashMap<PlFormula, Node>();
+        for (PlFormula formula : justification)
+        {
+            this.childrenNodes.put(formula, null);
+        }
     }
 
     public List<PlFormula> getJustification()
@@ -62,14 +67,74 @@ public class Node
         return this.childrenNodes.get(formula);
     }
     
+    public void initialiseChildNodeMap()
+    {
+        for (PlFormula formula : justification )
+        {
+            childrenNodes.put(formula, null);
+        }
+    }
+    
+    public int getNumChildNodes()
+    {
+        return this.childrenNodes.size();
+    }
+    
+    
+    private String printKnowldegeBaseAsCSV()
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (PlFormula formula : this.knowledgeBase)
+        {
+            stringBuilder.append(formula).append(", ");
+        }
+        String result = stringBuilder.toString();
+        if (result != null && result != "" && result.length() > 2)
+            return result.substring(0, result.length()-2);
+        else
+            return "NULL";
+    }
+    
+    private String printJustificationAsCSV()
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (PlFormula formula : justification)
+        {
+            stringBuilder.append(formula).append(", ");
+        }
+        String result = stringBuilder.toString();
+        if (result != null && result != "" && result.length() > 2)
+            return result.substring(0, result.length()-2);
+        else
+            return "NULL";
+    }
+    
+    public String toString(String prefix)
+    {
+        StringBuilder stringBuilder = new StringBuilder(prefix);
+        stringBuilder.append("<<Node>>\n")
+                .append(prefix).append("<<KnowledegeBase == ").append(printKnowldegeBaseAsCSV()).append(">>\n")
+                .append(prefix).append("<<Justification  == ").append(printJustificationAsCSV()).append(">>\n");
+        if (this.childrenNodes == null || this.childrenNodes.isEmpty())
+        {
+            stringBuilder.append(prefix).append("No children nodes.");
+        }
+        else 
+        {
+            for (PlFormula key : this.childrenNodes.keySet())
+            {
+                stringBuilder.append(prefix).append(key).append(": \n").append(this.childrenNodes.get(key).toString(prefix+"\t")).append("\n");
+            }
+        }
+        return stringBuilder.toString();
+    }
+    
     public String toString()
     {
         StringBuilder stringBuilder = new StringBuilder("<<Node>>\n");
-        stringBuilder.append("<<Justification == ")
-                .append(Utils.justificationToString(justification))
-                .append(">>\n")
-                .append("<< Child Nodes >>\n");
-        if(this.childrenNodes == null)
+        stringBuilder.append("<<KnowledgeBase == ").append(printKnowldegeBaseAsCSV()).append(">>\n");
+        stringBuilder.append("<<Justification == ").append(printJustificationAsCSV()).append(">>\n");
+        if(this.childrenNodes == null || this.childrenNodes.isEmpty())
         {
             stringBuilder.append("No childern nodes");
         }
@@ -77,9 +142,7 @@ public class Node
         {
             for (PlFormula key : this.childrenNodes.keySet())
             {
-                stringBuilder.append(key)
-                        .append(": \t")
-                        .append(this.childrenNodes.get(key).toString());
+                stringBuilder.append(key).append(": \n").append(this.childrenNodes.get(key).toString("\t"));
             }
         }
         

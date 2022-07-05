@@ -22,16 +22,16 @@ public class ClassicalReasonerTester
     public static void main(String[] args) 
     {
         PlBeliefSet knowledgeBase = new PlBeliefSet();
-        PlFormula formula = new Implication(new Proposition("p"), new Proposition("b"));
+        PlFormula formula = new Implication(new Proposition("a"), new Proposition("b"));
         knowledgeBase.add(formula);
-        formula = new Implication(new Proposition("r"), new Proposition("b"));
+        formula = new Implication(new Proposition("b"), new Proposition("c"));
         knowledgeBase.add(formula);
-        formula = new Implication(new Proposition("f"), new Proposition("m"));
-        knowledgeBase.add(formula);
-        formula = new Implication(new Proposition("p"), new Negation(new Proposition("f")));
-        knowledgeBase.add(formula);
+        //formula = new Implication(new Proposition("f"), new Proposition("m"));
+        //knowledgeBase.add(formula);
+        //formula = new Implication(new Proposition("p"), new Negation(new Proposition("f")));
+        //knowledgeBase.add(formula);
         
-        PlFormula query = new Implication(new Proposition("p"), new Negation(new Proposition("m")));
+        PlFormula query = new Implication(new Proposition("a"), new Negation(new Proposition("c")));
         
         SatSolver.setDefaultSolver(new Sat4jSolver());
         SatReasoner reasoner = new SatReasoner();

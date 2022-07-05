@@ -65,8 +65,19 @@ public class Utils
     
     public static PlBeliefSet remove(PlBeliefSet knowledgeBase, PlFormula formulas)
     {
-        knowledgeBase.remove(formulas);
-        return knowledgeBase;
+        PlBeliefSet newKB = clone(knowledgeBase);
+        newKB.remove(formulas);
+        return newKB;
+    }
+    
+    public static PlBeliefSet clone (PlBeliefSet knowledgeBase)
+    {
+        PlBeliefSet newKB = new PlBeliefSet();
+        for (PlFormula formula : knowledgeBase)
+        {
+            newKB.add(formula);
+        }
+        return newKB;
     }
     
     public static List<PlFormula> remove(List<PlFormula> knowledgeBase, PlFormula formula)

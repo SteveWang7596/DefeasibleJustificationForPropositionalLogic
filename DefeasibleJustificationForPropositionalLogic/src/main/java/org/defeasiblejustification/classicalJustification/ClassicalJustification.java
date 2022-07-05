@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.Set;
+import org.defeasiblejustification.model.HittingSetTree;
 import org.defeasiblejustification.model.Node;
 import org.defeasiblejustification.util.Utils;
 import org.tweetyproject.logics.pl.reasoner.SatReasoner;
@@ -26,34 +27,33 @@ public class ClassicalJustification
         SatSolver.setDefaultSolver(new Sat4jSolver());
         SatReasoner reasoner = new SatReasoner();
         
+        // Construct root node
         List<PlFormula> rootJustification = computeSingleJustification(knowledgeBase, query, reasoner);
-        System.out.println("Root Justification: ");
-        Utils.print(rootJustification);
-        
         Node rootNode = new Node(knowledgeBase, rootJustification);
         
+        // Create a queue to keep track of nodes
         Queue<Node> queue = new LinkedList<Node>();
         queue.add(rootNode);
+        HittingSetTree tree = new HittingSetTree(rootNode);
         
         while(!queue.isEmpty())
         {
             Node node = queue.poll();
             
-            System.out.println("Working on node with justification: ");
-            Utils.print(node.getJustification());
-            
             for( PlFormula formula : node.getJustification())
             {
-                Node childNode = new Node(Utils.remove(node.getKnowledgeBase(), formula));
-                List<PlFormula> childJustification = computeSingleJustification(childNode.getKnowledgeBase(), query, reasoner);
+                PlBeliefSet childKnowledgeBase = Utils.remove(node.getKnowledgeBase(), formula);
+                List<PlFormula> childJustification = computeSingleJustification(childKnowledgeBase, query, reasoner);
+                Node childNode = new Node(childKnowledgeBase, childJustification);
+                
+                node.addChildNode(formula, childNode);
+                tree.addNode(childNode);
+                
                 if (childJustification != null || childJustification.isEmpty())
                 {
-                    childNode.setJustification(childJustification);
                     queue.add(childNode);
                 }
             }
-            
-            
         }
         
         System.out.println("Tree:");
@@ -62,7 +62,7 @@ public class ClassicalJustification
     }
     
     private static List<PlFormula> computeSingleJustification(PlBeliefSet knowledgeBase, PlFormula query, SatReasoner reasoner)
-    {
+    {  
         List<PlFormula> result = new ArrayList<PlFormula>();
         
         if (knowledgeBase.contains(query))
@@ -72,16 +72,19 @@ public class ClassicalJustification
         }
         
         result = expandFormulas(knowledgeBase, query, reasoner);
-        System.out.println("After expand formulas:");
-        Utils.print(result);
+
         if (result.isEmpty())
             return result;
         
         result = contractFormuls(result, query, reasoner);
-        System.out.println("After contract formulas:");
-        Utils.print(result);
-        
+
         return result;
+    }
+    
+    private static void printResultJustification(List<PlFormula> result)
+    {
+        System.out.println("Print result justification");
+        Utils.print(result);
     }
 
     private static List<PlFormula> expandFormulas(PlBeliefSet knowledgeBase, PlFormula query, SatReasoner reasoner) 
@@ -109,9 +112,6 @@ public class ClassicalJustification
     
     private static List<PlFormula> findRelatedFormulas(List<Proposition> signatures, PlBeliefSet knowledgeBase)
     {
-        System.out.println("For signature:");
-        Utils.printPropositions(signatures);
-        
         List<PlFormula> result = new ArrayList<PlFormula>();
         
         for(PlFormula formula: knowledgeBase)
@@ -119,9 +119,6 @@ public class ClassicalJustification
             if (!Collections.disjoint(getSignature(formula), signatures))
                 result.add(formula);
         }
-        
-        System.out.println("Related formula list:");
-        Utils.print(result);
         
         return result;
     }
