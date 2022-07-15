@@ -44,6 +44,17 @@ public class Utils
         return materialised;
     }
     
+    public static PlBeliefSet materialise(PlBeliefSet knowledgeBase)
+    {
+        PlBeliefSet result = new PlBeliefSet();
+        
+        for (PlFormula formula : knowledgeBase)
+            result.add(materialise(formula));
+        
+        return result;
+        
+    }
+    
     public static PlFormula materialise(PlFormula formula)
     {
         if (formula instanceof DefeasibleImplication)
@@ -55,6 +66,36 @@ public class Utils
         {
             return formula;
         }
+    }
+    
+    public static List<PlFormula> dematerialise(List<PlFormula> justification, List<PlFormula> classicalFormulas )
+    {
+        List<PlFormula> result = new ArrayList<PlFormula>();
+        
+        for( PlFormula formula : justification)
+        {
+            if (!classicalFormulas.contains(formula) && formula instanceof Implication)
+            {
+                PlFormula dematerialisedFormula = new DefeasibleImplication(((Implication)formula).getFirstFormula(), ((Implication)formula).getSecondFormula());
+                result.add(dematerialisedFormula);
+            }
+            else
+            {
+                result.add(formula);
+            }
+        }
+        return result;
+    }
+    
+    public static List<PlFormula> getClassicalFormulas(PlBeliefSet knowledgeBase)
+    {
+        List<PlFormula> classicalFormulas = new ArrayList<PlFormula>();
+        for (PlFormula plFormula : knowledgeBase)
+        {
+            if (!(plFormula instanceof DefeasibleImplication))
+                classicalFormulas.add(plFormula);
+        }
+        return classicalFormulas;
     }
     
     public static PlBeliefSet remove(PlBeliefSet knowledgeBase, List<PlFormula> formulas)
@@ -100,6 +141,34 @@ public class Utils
             System.out.println("null");
         for(Proposition proposition: list)
             System.out.println(proposition);
+    }
+    
+    public static void printJustifiactions(List<List<PlFormula>> justifications)
+    {
+        System.out.println("Print Justifications: \n");
+        int i = 0;
+        for (List<PlFormula> justification : justifications)
+        {
+            StringBuilder stringBuilder = new StringBuilder(i)
+                    .append("\t: ")
+                    .append(printJustificationAsCSV(justification)).append("\n");
+            System.out.println(stringBuilder.toString());
+            i++;
+        }
+    }
+    
+    public static String printJustificationAsCSV(List<PlFormula> justification)
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (PlFormula formula : justification)
+        {
+            stringBuilder.append(formula).append(", ");
+        }
+        String result = stringBuilder.toString();
+        if (result != null && result != "" && result.length() > 2)
+            return result.substring(0, result.length()-2);
+        else
+            return "NULL";
     }
     
     public static String justificationToString(List<PlFormula> formulas)

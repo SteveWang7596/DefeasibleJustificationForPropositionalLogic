@@ -47,7 +47,7 @@ public class RationalClosure
     private static MinimalRankedFormulas computeMinimalRanking(PlBeliefSet knowledgeBase, SatReasoner reasoner) throws Exception
     {
         
-        List<PlFormula> classicalFormulas = getClassicalFormulas(knowledgeBase);
+        List<PlFormula> classicalFormulas = Utils.getClassicalFormulas(knowledgeBase);
         System.out.println("=====Classical Formulas=====");
         Utils.print(classicalFormulas);
         
@@ -127,17 +127,6 @@ public class RationalClosure
                 defeasibleFormulas.add(plFormula);
         }
         return defeasibleFormulas;
-    }
-    
-    private static List<PlFormula> getClassicalFormulas(PlBeliefSet knowledgeBase)
-    {
-        List<PlFormula> classicalFormulas = new ArrayList<PlFormula>();
-        for (PlFormula plFormula : knowledgeBase)
-        {
-            if (!(plFormula instanceof DefeasibleImplication))
-                classicalFormulas.add(plFormula);
-        }
-        return classicalFormulas;
     }
     
     private static Boolean equals(PlFormula x, PlFormula y) throws Exception

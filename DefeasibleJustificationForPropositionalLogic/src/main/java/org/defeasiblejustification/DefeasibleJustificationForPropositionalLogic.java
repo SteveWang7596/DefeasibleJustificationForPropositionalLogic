@@ -1,9 +1,13 @@
 package org.defeasiblejustification;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.defeasiblejustification.classicalJustification.ClassicalJustification;
+import org.defeasiblejustification.model.Node;
 import org.defeasiblejustification.model.RationalClosureResults;
 import org.defeasiblejustification.parser.DefeasibleParser;
 import org.defeasiblejustification.rationalclosure.RationalClosure;
@@ -64,6 +68,8 @@ public class DefeasibleJustificationForPropositionalLogic
     
     private static void computeDefeasibleExplanation(PlBeliefSet knowledgeBase, PlFormula query) throws Exception
     {
+        List<PlFormula> classicalFormulas = Utils.getClassicalFormulas(knowledgeBase);
+        
         RationalClosureResults rationalClosure= RationalClosure.computeRationalClosure(knowledgeBase, query);
         System.out.println(rationalClosure);
         
@@ -77,9 +83,13 @@ public class DefeasibleJustificationForPropositionalLogic
         
         if (ranksRemoved == 0)
         {
-            //TODO: 
-            //Compute All Justifications: Return ArrayList<PlFormula>
-            //Dematerialise: Return ArrayList<PlFormula>
+            Node rootNode = ClassicalJustification.computeJustification(Utils.materialise(knowledgeBase), Utils.materialise(query));
+            List<List<PlFormula>> justifiactions = rootNode.getAllJustifications();
+            List<List<PlFormula>> dematerialisedJustification = new ArrayList<List<PlFormula>>();
+            for (List<PlFormula> justification : justifiactions)
+            {
+                dematerialisedJustification.add(Utils.dematerialise(justification, classicalFormulas));
+            }
             return;
         }
         
@@ -93,18 +103,20 @@ public class DefeasibleJustificationForPropositionalLogic
             i ++;
         }
         
+        Node rootNode = ClassicalJustification.computeJustification(Utils.materialise(knowledgeBase), Utils.materialise(query));
+        List<List<PlFormula>> justifiactions = rootNode.getAllJustifications();
+        List<List<PlFormula>> dematerialisedJustification = new ArrayList<List<PlFormula>>();
+        for (List<PlFormula> justification : justifiactions)
+        {
+            dematerialisedJustification.add(Utils.dematerialise(justification, classicalFormulas));
+        }
         
+        System.out.println("Final Justification");
+        for (List<PlFormula> newJust : dematerialisedJustification)
+        {
+            System.out.println(Utils.printJustificationAsCSV(newJust));
+        }
         
-        
-        
-        // If rank == 0
-        // Compute All Justifications: Returns ArrayList<Justifiacitons>
-        // Dematerialise: Returns ArrayList<Justifications>
-
-        // Else
-        // Remove ranking < rank 
-        // Compute All Justifications: Returns ArrayList<Justifiacitons>
-        // Dematerialise: Returns ArrayList<Justifications>
     }
     
 }

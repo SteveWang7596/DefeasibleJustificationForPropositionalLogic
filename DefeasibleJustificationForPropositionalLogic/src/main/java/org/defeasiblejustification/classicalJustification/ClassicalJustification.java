@@ -22,7 +22,7 @@ import org.tweetyproject.logics.pl.syntax.Proposition;
  */
 public class ClassicalJustification 
 {
-    public static List<List<PlFormula>> computeJustification(PlBeliefSet knowledgeBase, PlFormula query)
+    public static Node computeJustification(PlBeliefSet knowledgeBase, PlFormula query)
     {
         SatSolver.setDefaultSolver(new Sat4jSolver());
         SatReasoner reasoner = new SatReasoner();
@@ -58,7 +58,13 @@ public class ClassicalJustification
         
         System.out.println("Tree:");
         System.out.println(rootNode.toString());
-        return null;
+        
+        System.out.println("ALL possible justifications");
+        List<List<PlFormula>> justifications = rootNode.getAllJustifications();
+        for (List<PlFormula> justification : justifications)
+            System.out.println(Utils.printJustificationAsCSV(justification));
+        
+        return rootNode;
     }
     
     private static List<PlFormula> computeSingleJustification(PlBeliefSet knowledgeBase, PlFormula query, SatReasoner reasoner)

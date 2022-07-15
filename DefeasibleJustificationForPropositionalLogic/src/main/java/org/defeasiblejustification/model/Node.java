@@ -5,6 +5,7 @@
  */
 package org.defeasiblejustification.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,6 +81,27 @@ public class Node
         return this.childrenNodes.size();
     }
     
+    
+    public List<List<PlFormula>> getAllJustifications()
+    {
+        List<List<PlFormula>> justifications = new ArrayList<List<PlFormula>>();
+        
+        if (this.childrenNodes != null && !this.childrenNodes.isEmpty())
+        {
+            for (PlFormula key : this.childrenNodes.keySet())
+            {
+                Node childNode = this.childrenNodes.get(key);
+                justifications.addAll(childNode.getAllJustifications());
+            }
+        }
+        
+        if (this.justification != null && !this.justification.isEmpty() && !justifications.contains(this.justification))
+        {
+            justifications.add(this.justification);
+        }
+        
+        return justifications;
+    }
     
     private String printKnowldegeBaseAsCSV()
     {
