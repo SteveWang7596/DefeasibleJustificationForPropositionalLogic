@@ -26,12 +26,12 @@ public class RationalClosure
         SatReasoner reasoner = new SatReasoner();
         
         MinimalRankedFormulas minimalRankedFormulas = computeMinimalRanking(knowledgeBase, reasoner);
-        System.out.println("=====Minimal Ranked Formulas=====");
-        System.out.println(minimalRankedFormulas);
+        //System.out.println("=====Minimal Ranked Formulas=====");
+        //System.out.println(minimalRankedFormulas);
         
         PlBeliefSet R = new PlBeliefSet(Utils.materialise(minimalRankedFormulas.getAllFormulas()));
-        System.out.println("=====R=====");
-        System.out.println(R);
+        //System.out.println("=====R=====");
+        //System.out.println(R);
         
         int i = 0;
         
@@ -48,8 +48,8 @@ public class RationalClosure
     {
         
         List<PlFormula> classicalFormulas = Utils.getClassicalFormulas(knowledgeBase);
-        System.out.println("=====Classical Formulas=====");
-        Utils.print(classicalFormulas);
+        //System.out.println("=====Classical Formulas=====");
+        //Utils.print(classicalFormulas);
         
         List<PlFormula> currentFormulas = getDefeasibleFormulas(knowledgeBase, classicalFormulas);
         List<PlFormula> prevFormulas = new ArrayList<PlFormula>();
@@ -58,16 +58,16 @@ public class RationalClosure
         
         while(!prevFormulas.equals(currentFormulas))
         {
-            System.out.println("=====E_"+i+"=====");
-            Utils.print(currentFormulas);
+            //System.out.println("=====E_"+i+"=====");
+            //Utils.print(currentFormulas);
             prevFormulas = currentFormulas;
             currentFormulas = computeExceptionalFormulas(currentFormulas, classicalFormulas, reasoner);
             
-            System.out.println("=====R_"+i+"=====");
+            //System.out.println("=====R_"+i+"=====");
             List<PlFormula> currentRank = remove(prevFormulas, currentFormulas);
             //Utils.print(currentRank);
             rankedFormulas.add(currentRank);
-            Utils.print(currentRank);
+            //Utils.print(currentRank);
             i++;
         }
         

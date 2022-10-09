@@ -22,7 +22,7 @@ import org.tweetyproject.logics.pl.syntax.PlFormula;
  */
 public class DefeasibleJustificationForPropositionalLogic 
 {
-
+    
     public static void main(String[] args) 
     {
         try 
@@ -33,9 +33,9 @@ public class DefeasibleJustificationForPropositionalLogic
             DefeasibleParser defeasibleParser = new DefeasibleParser(classicalParser);
             
             // args[0] = Defeasible Knowledge Base
-            String inputKnowledgeBasePath = "src/main/resources/example/input/knowledgebase.txt";       //Default Knowledge Base
-            if (args == null || args[0] != null)
-                inputKnowledgeBasePath = args[0];
+            String inputKnowledgeBasePath = "src/main/resources/example/input/SpecialPenguinExample.txt";       //Default Knowledge Base
+            //if (args == null || args[0] != null)
+            //    inputKnowledgeBasePath = args[0];
             Scanner scanner = new Scanner(new File(inputKnowledgeBasePath));
             
             while (scanner.hasNextLine())
@@ -50,10 +50,14 @@ public class DefeasibleJustificationForPropositionalLogic
             System.out.println("Knowledge Base:\n" + knowledgeBase);
 
             // args[1] = Query
-            if (args[1] == null)
-                throw new Exception("Invalid query.");
-            else
-                query = defeasibleParser.parseFormula(args[1]);
+            //if (args[1] == null)
+            //    throw new Exception("Invalid query.");
+            //else
+            //   query = defeasibleParser.parseFormula(args[1]);
+            
+            //query = defeasibleParser.parseFormula("Robin~>Wings");
+            //query = defeasibleParser.parseFormula("Penguin~>Wings");
+            query = defeasibleParser.parseFormula("SpecialPenguin~>Fly");
             
             System.out.println("Query:\n" + query.toString());
             
@@ -90,6 +94,11 @@ public class DefeasibleJustificationForPropositionalLogic
             {
                 dematerialisedJustification.add(Utils.dematerialise(justification, classicalFormulas));
             }
+            System.out.println("<<Final Justification>>");
+            for (List<PlFormula> newJust : dematerialisedJustification)
+            {
+                System.out.println(Utils.printJustificationAsCSV(newJust));
+            }
             return;
         }
         
@@ -111,7 +120,7 @@ public class DefeasibleJustificationForPropositionalLogic
             dematerialisedJustification.add(Utils.dematerialise(justification, classicalFormulas));
         }
         
-        System.out.println("Final Justification");
+        System.out.println("<<Final Justification>>");
         for (List<PlFormula> newJust : dematerialisedJustification)
         {
             System.out.println(Utils.printJustificationAsCSV(newJust));

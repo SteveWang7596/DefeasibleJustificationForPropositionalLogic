@@ -56,10 +56,10 @@ public class ClassicalJustification
             }
         }
         
-        System.out.println("Tree:");
-        System.out.println(rootNode.toString());
+        //System.out.println("Tree:");
+        //System.out.println(rootNode.toString());
         
-        System.out.println("ALL possible justifications");
+        System.out.println("<<ALL possible classical justifications>>");
         List<List<PlFormula>> justifications = rootNode.getAllJustifications();
         for (List<PlFormula> justification : justifications)
             System.out.println(Utils.printJustificationAsCSV(justification));

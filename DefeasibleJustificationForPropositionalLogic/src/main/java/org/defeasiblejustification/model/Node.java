@@ -139,7 +139,7 @@ public class Node
                 .append(prefix).append("<<Justification  == ").append(printJustificationAsCSV()).append(">>\n");
         if (this.childrenNodes == null || this.childrenNodes.isEmpty())
         {
-            stringBuilder.append(prefix).append("No children nodes.");
+            stringBuilder.append(prefix).append("No children nodes.\n");
         }
         else 
         {
@@ -158,7 +158,7 @@ public class Node
         stringBuilder.append("<<Justification == ").append(printJustificationAsCSV()).append(">>\n");
         if(this.childrenNodes == null || this.childrenNodes.isEmpty())
         {
-            stringBuilder.append("No childern nodes");
+            stringBuilder.append("No childern nodes.\n");
         }
         else
         {
