@@ -20,7 +20,7 @@ import org.tweetyproject.logics.pl.syntax.Proposition;
  *
  * @author stevewang
  */
-public class ClassicalJustification 
+public class ClassicJust 
 {
     public static Node computeJustification(PlBeliefSet knowledgeBase, PlFormula query)
     {

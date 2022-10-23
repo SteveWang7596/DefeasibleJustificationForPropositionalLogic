@@ -1,5 +1,7 @@
 package org.defeasiblejustification.model;
 
+import org.tweetyproject.logics.pl.syntax.PlBeliefSet;
+
 /**
  *
  * @author stevewang
@@ -9,12 +11,14 @@ public class RationalClosureResults
     private boolean entailment;
     private int ranksRemoved;
     private MinimalRankedFormulas rankedFormulas;
+    private PlBeliefSet remainingFormulas;
     
-    public RationalClosureResults(boolean entailment, int ranksRemoved, MinimalRankedFormulas rankedFormulas)
+    public RationalClosureResults(boolean entailment, int ranksRemoved, MinimalRankedFormulas rankedFormulas, PlBeliefSet remainingFormulas)
     {
         this.entailment = entailment;
         this.ranksRemoved = ranksRemoved;
         this.rankedFormulas = rankedFormulas;
+        this.remainingFormulas = remainingFormulas;
     }
     
     public boolean entailmentsHolds()
@@ -30,6 +34,11 @@ public class RationalClosureResults
     public MinimalRankedFormulas getMinimalRanking()
     {
         return this.rankedFormulas;
+    }
+    
+    public PlBeliefSet getRemainingFormulas()
+    {
+        return this.remainingFormulas;
     }
     
     public String toString()

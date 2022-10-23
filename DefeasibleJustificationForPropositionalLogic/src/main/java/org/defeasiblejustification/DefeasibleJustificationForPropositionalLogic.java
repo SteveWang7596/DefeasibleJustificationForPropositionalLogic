@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.defeasiblejustification.classicalJustification.ClassicalJustification;
+import org.defeasiblejustification.classicalJustification.ClassicJust;
 import org.defeasiblejustification.model.Node;
 import org.defeasiblejustification.model.RationalClosureResults;
 import org.defeasiblejustification.parser.DefeasibleParser;
@@ -33,7 +33,8 @@ public class DefeasibleJustificationForPropositionalLogic
             DefeasibleParser defeasibleParser = new DefeasibleParser(classicalParser);
             
             // args[0] = Defeasible Knowledge Base
-            String inputKnowledgeBasePath = "src/main/resources/example/input/SpecialPenguinExample.txt";       //Default Knowledge Base
+            //String inputKnowledgeBasePath = "src/main/resources/example/input/SpecialPenguinExample.txt";       //Default Knowledge Base
+            String inputKnowledgeBasePath = "src/main/resources/example/input/nonEntailmentExample.txt";  
             //if (args == null || args[0] != null)
             //    inputKnowledgeBasePath = args[0];
             Scanner scanner = new Scanner(new File(inputKnowledgeBasePath));
@@ -57,7 +58,8 @@ public class DefeasibleJustificationForPropositionalLogic
             
             //query = defeasibleParser.parseFormula("Robin~>Wings");
             //query = defeasibleParser.parseFormula("Penguin~>Wings");
-            query = defeasibleParser.parseFormula("SpecialPenguin~>Fly");
+            //query = defeasibleParser.parseFormula("SpecialPenguin~>Fly");
+            query = defeasibleParser.parseFormula("Penguin~>Robin");
             
             System.out.println("Query:\n" + query.toString());
             
@@ -80,6 +82,7 @@ public class DefeasibleJustificationForPropositionalLogic
         if (!rationalClosure.entailmentsHolds())
         {
             System.out.println("Entailment does not hold.");
+            System.out.println("Following remaining formulas does not entail the query: \n" + rationalClosure.getRemainingFormulas());
             return;
         }
         
@@ -87,7 +90,7 @@ public class DefeasibleJustificationForPropositionalLogic
         
         if (ranksRemoved == 0)
         {
-            Node rootNode = ClassicalJustification.computeJustification(Utils.materialise(knowledgeBase), Utils.materialise(query));
+            Node rootNode = ClassicJust.computeJustification(Utils.materialise(knowledgeBase), Utils.materialise(query));
             List<List<PlFormula>> justifiactions = rootNode.getAllJustifications();
             List<List<PlFormula>> dematerialisedJustification = new ArrayList<List<PlFormula>>();
             for (List<PlFormula> justification : justifiactions)
@@ -112,7 +115,7 @@ public class DefeasibleJustificationForPropositionalLogic
             i ++;
         }
         
-        Node rootNode = ClassicalJustification.computeJustification(Utils.materialise(knowledgeBase), Utils.materialise(query));
+        Node rootNode = ClassicJust.computeJustification(Utils.materialise(knowledgeBase), Utils.materialise(query));
         List<List<PlFormula>> justifiactions = rootNode.getAllJustifications();
         List<List<PlFormula>> dematerialisedJustification = new ArrayList<List<PlFormula>>();
         for (List<PlFormula> justification : justifiactions)

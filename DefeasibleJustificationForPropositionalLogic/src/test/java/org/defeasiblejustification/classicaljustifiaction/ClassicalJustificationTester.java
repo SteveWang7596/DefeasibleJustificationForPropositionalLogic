@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.defeasiblejustification.classicalJustification.ClassicalJustification;
+import org.defeasiblejustification.classicalJustification.ClassicJust;
 import org.tweetyproject.commons.ParserException;
 import org.tweetyproject.logics.pl.parser.PlParser;
 import org.tweetyproject.logics.pl.syntax.Implication;
@@ -41,7 +41,7 @@ public class ClassicalJustificationTester
             
             PlFormula query = new Implication(new Proposition("a"), new Proposition("c"));
             
-            ClassicalJustification.computeJustification(knowledgeBase, query);
+            ClassicJust.computeJustification(knowledgeBase, query);
             
             
         } 

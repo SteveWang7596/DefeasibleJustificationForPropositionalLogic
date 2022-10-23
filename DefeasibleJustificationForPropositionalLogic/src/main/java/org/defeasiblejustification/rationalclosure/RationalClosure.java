@@ -41,7 +41,7 @@ public class RationalClosure
             i ++;
         }
         
-        return new RationalClosureResults(reasoner.query(R, Utils.materialise((DefeasibleImplication)query)), i, minimalRankedFormulas);
+        return new RationalClosureResults(reasoner.query(R, Utils.materialise((DefeasibleImplication)query)), i, minimalRankedFormulas, R);
     }
     
     private static MinimalRankedFormulas computeMinimalRanking(PlBeliefSet knowledgeBase, SatReasoner reasoner) throws Exception
