@@ -81,7 +81,7 @@ public class MainFrame extends javax.swing.JFrame {
 
         lblQuery.setText("Query:");
 
-        btnCompute.setText("Compute Defeasibe Justification");
+        btnCompute.setText("Compute Defeasible Justification");
         btnCompute.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnComputeActionPerformed(evt);
